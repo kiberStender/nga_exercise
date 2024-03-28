@@ -10,40 +10,33 @@ object Common {
 
     scalaVersion := scalaV,
 
-    Global / scalacOptions                   := Seq("-P:kind-projector:underscore-placeholders"),
+    Global / scalacOptions                   := Seq("-P:kind-projector:underscore-placeholders", "-Ymacro-annotations"),
     Global / transitiveClassifiers           := Seq(Artifact.SourceClassifier),
     Test / parallelExecution                 := true
   )
 
   lazy val `domain-dependencies`: Seq[ModuleID] = Seq(
-    org.typelevel.`cats-core`
+    com.github.`julien-truffaut`.`monocle-core`,
+    com.github.`julien-truffaut`.`monocle-macro`,
+    org.typelevel.`cats-core`,
+    // Test
+    org.scalatest.scalatest,
   )
 
   lazy val `core-dependencies`: Seq[ModuleID] = Seq(
     // Test
-    org.scalatest.scalatest,
-    org.scalatestplus.`mockito-4-5`
+    org.scalatest.scalatest
   )
 
-  lazy val `delivery-http4s-dependencies`: Seq[ModuleID] = Seq(
-    com.github.pureconfig.`pureconfig-core`,
-    io.circe.`circe-generic`,
+  lazy val `delivery-dependencies`: Seq[ModuleID] = Seq(
     org.typelevel.`cats-effect`,
     org.typelevel.`log4cats-slf4j`,
-    // Test
-    org.scalatest.scalatest,
-    org.scalatestplus.`mockito-4-5`,
-    org.scalameta.munit
-  )
-
-  lazy val `persistence-skunk-dependencies`: Seq[ModuleID] = Seq(
-    org.typelevel.`cats-core`,
-    org.typelevel.`cats-effect`,
+    co.fs.`fs2-io`,
     // Test
     org.scalatest.scalatest
   )
 
-  lazy val `main-http4s-cats-effect-dependencies`: Seq[ModuleID] = Seq(
+  lazy val `main-dependencies`: Seq[ModuleID] = Seq(
     org.typelevel.`cats-effect`,
     org.typelevel.`log4cats-slf4j`,
 

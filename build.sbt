@@ -10,7 +10,6 @@ lazy val root = (project in file("."))
     domain,
     core,
     delivery,
-    persistence,
     main
   )
 
@@ -34,26 +33,17 @@ lazy val root = (project in file("."))
       .in(file("03-delivery"))
       .dependsOn(core % Cctt)
       .settings(Common.settings *)
-      .settings(libraryDependencies ++= Common.`delivery-http4s-dependencies`)
+      .settings(libraryDependencies ++= Common.`delivery-dependencies`)
       .settings(addCompilerPlugin("org.typelevel" % "kind-projector" % "0.13.3" cross CrossVersion.full))
       .settings(addCompilerPlugin("com.olegpy" %% "better-monadic-for" % "0.3.1"))
 
-  lazy val persistence =
-    project
-      .in(file("03-persistence"))
-      .dependsOn(core % Cctt)
-      .settings(Common.settings *)
-      .settings(libraryDependencies ++= Common.`persistence-skunk-dependencies`)
-      .settings(addCompilerPlugin("org.typelevel" % "kind-projector" % "0.13.3" cross CrossVersion.full))
-      .settings(addCompilerPlugin("com.olegpy" %% "better-monadic-for" % "0.3.1"))
 
   lazy val main =
     project
       .in(file("04-main"))
       .dependsOn(delivery % Cctt)
-      .dependsOn(persistence % Cctt)
       .settings(Common.settings *)
-      .settings(libraryDependencies ++= Common.`main-http4s-cats-effect-dependencies`)
+      .settings(libraryDependencies ++= Common.`main-dependencies`)
       .settings(addCompilerPlugin("org.typelevel" % "kind-projector" % "0.13.3" cross CrossVersion.full))
       .settings(addCompilerPlugin("com.olegpy" %% "better-monadic-for" % "0.3.1"))
       .enablePlugins(JavaAppPackaging)
