@@ -1,5 +1,4 @@
 ThisBuild / organization := "com.nga"
-ThisBuild / scalaVersion := "3.1.3"
 ThisBuild / version := "0.0.1-SNAPSHOT"
 
 lazy val Cctt = "compile->compile;test->test"
