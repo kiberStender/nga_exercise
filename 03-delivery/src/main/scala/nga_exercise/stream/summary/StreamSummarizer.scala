@@ -4,6 +4,11 @@ import cats.effect.Async
 import cats.implicits.catsSyntaxEq
 import nga_exercise.model.{IncorrectReading, NaN, Output, Sensor, SensorStatistic, Val}
 
+/** A trait describing how to produce a representation of the Output to be displayed in a given
+  * output
+  * @tparam F
+  *   The bound type
+  */
 trait StreamSummarizer[F[*]] {
   def summarize(output: Output): fs2.Stream[F, String]
 }

@@ -6,7 +6,18 @@ import nga_exercise.model.{IncorrectReading, NaN, Output, Sensor, SensorStatisti
 import nga_exercise.ops.StringOps.StringToFilesOps
 import nga_exercise.stream.filestreamer.FileStreamer
 
+/** A trait describing how to get a [[fs2.Stream]] of [[Sensor]] and convert it into a stream of
+  * [[Output]]
+  * @tparam F
+  *   The bound type
+  */
 trait AppStream[F[*]] {
+
+  /** Method that takes a path to a folder containing the csv files to be streamed
+    * @param dirUrl
+    *   The path to the folder containing csv files
+    * @return
+    */
   def start(dirUrl: String): fs2.Stream[F, Output]
 }
 

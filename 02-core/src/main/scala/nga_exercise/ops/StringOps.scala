@@ -1,18 +1,24 @@
 package nga_exercise.ops
 
-import cats.{ApplicativeError, MonadError}
+import cats.ApplicativeError
 import cats.syntax.all.{
   catsSyntaxApplicativeError,
   catsSyntaxApplicativeErrorId,
   catsSyntaxApplicativeId,
-  toFlatMapOps,
   toFunctorOps
 }
 import nga_exercise.model.{Humidity, IncorrectReading, NaN, Sensor, Val}
 
 import java.io.File
 
+/** An object containing [[String]] operations
+  */
 object StringOps {
+
+  /** An operation to convert an [[String]] into an [[Int]] in a safer way
+    * @param str
+    *   The [[String]] that will be converted to an [[Int]]
+    */
   implicit class StringToIntOps(str: String) {
     def toIntSafe[F[*]: Lambda[F[*] => ApplicativeError[F, Throwable]]]: F[Int] = try {
       str.toInt.pure[F]
@@ -22,6 +28,10 @@ object StringOps {
     }
   }
 
+  /** An operation to convert an [[String]] into an [[Humidity]] instance
+    * @param humidityStr
+    *   the [[String]] to be converted to an [[Humidity]]
+    */
   implicit class StringToHumidity(humidityStr: String) {
     def toHumidity[F[*]: Lambda[F[*] => ApplicativeError[F, Throwable]]]: F[Humidity] =
       humidityStr.trim.toLowerCase match {
@@ -37,6 +47,10 @@ object StringOps {
       }
   }
 
+  /** An operation to convert a [[String]] to [[Sensor]]
+    * @param line
+    *   The [[String]] to be converted to a [[Sensor]]
+    */
   implicit class StringToSensorOps(line: String) {
     def toSensor[F[*]: Lambda[F[*] => ApplicativeError[F, Throwable]]](
         fileName: String
@@ -51,6 +65,11 @@ object StringOps {
       }
   }
 
+  /** An operation to convert a [[String]] into a list of [[String]]s representing a lis tof files
+    * in a directory were the files are all csv
+    * @param dirUrl
+    *   The [[String]] to be converted
+    */
   implicit class StringToFilesOps(dirUrl: String) {
     def toListOfFiles: List[String] = (new File(dirUrl))
       .listFiles()
