@@ -36,6 +36,33 @@ object AppStream {
           else if (newMax < prevMax) prevMax
           else newMax
 
+        private def addToOutput(
+            acc: Output
+        )(filename: String, id: String)(humidity: Val): Output = {
+          val statistic: SensorStatistic = acc.sensorStatMap
+            .get(id)
+            .map(
+              SensorStatistic._sum
+                .modify(_ + humidity.value)
+                .andThen(SensorStatistic._updates.modify(_ + 1))
+                .andThen(SensorStatistic._min.modify(minOrNaN(humidity.value)))
+                .andThen(SensorStatistic._max.modify(maxOrNaN(humidity.value)))
+                .andThen(s => SensorStatistic._avg.replace((s.sum / s.updates).toInt)(s))
+            )
+            .getOrElse(
+              SensorStatistic(
+                0,
+                0,
+                1,
+                humidity.value,
+                humidity.value,
+                humidity.value,
+                humidity.value
+              )
+            )
+          Output(acc.fileSet + filename, acc.sensorStatMap + (id -> statistic))
+        }
+
         def start(csvFileList: List[String]): fs2.Stream[F, Output] = {
           csvFileList
             .grouped(chunk)
@@ -44,19 +71,9 @@ object AppStream {
             }
             .flatMap(fileStreamer.stream)
             .fold(Output.default) {
-              case (Output(fileSet, map), Sensor(filename, id, Val(value))) =>
-                val statistic: SensorStatistic = map
-                  .get(id)
-                  .map(
-                    SensorStatistic._sum
-                      .modify(_ + value)
-                      .andThen(SensorStatistic._updates.modify(_ + 1))
-                      .andThen(SensorStatistic._min.modify(minOrNaN(value)))
-                      .andThen(SensorStatistic._max.modify(maxOrNaN(value)))
-                      .andThen(s => SensorStatistic._avg.replace((s.sum / s.updates).toInt)(s))
-                  )
-                  .getOrElse(SensorStatistic(0, 0, 1, value, value, value, value))
-                Output(fileSet + filename, map + (id -> statistic))
+              case (acc, Sensor(filename, id, humidity: Val)) =>
+                addToOutput(acc)(filename, id)(humidity)
+
               case (Output(fileSet, map), Sensor(filename, id, IncorrectReading)) =>
                 val statistic: SensorStatistic = map
                   .get(id)
