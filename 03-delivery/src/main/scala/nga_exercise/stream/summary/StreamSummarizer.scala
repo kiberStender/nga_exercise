@@ -10,11 +10,12 @@ import nga_exercise.model.{IncorrectReading, NaN, Output, Sensor, SensorStatisti
   *   The bound type
   */
 trait StreamSummarizer[F[*], A] {
-  /**
-   * Method that takes the output of a given stream and summarizes it to a given type A
-   * @param output The given output to be summarized
-   * @return
-   */
+
+  /** Method that takes the output of a given stream and summarizes it to a given type A
+    * @param output
+    *   The given output to be summarized
+    * @return
+    */
   def summarize(output: Output): fs2.Stream[F, A]
 }
 
