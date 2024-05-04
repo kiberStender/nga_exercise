@@ -2,12 +2,7 @@ package nga_exercise.ops
 
 import cats.implicits.catsSyntaxApplicativeId
 import nga_exercise.model.{IncorrectReading, NaN, Sensor, Val}
-import nga_exercise.ops.StringOps.{
-  StringToFilesOps,
-  StringToHumidity,
-  StringToIntOps,
-  StringToSensorOps
-}
+import nga_exercise.ops.StringOps.{StringToHumidity, StringToIntOps, StringToSensorOps}
 import org.scalatest.GivenWhenThen
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
@@ -176,20 +171,5 @@ class StringOpsTest extends AnyFlatSpec with Matchers with GivenWhenThen {
 
     actual.isLeft shouldBe true
     actual.swap.getOrElse(new Exception("Not the expected error")).getMessage shouldBe expected
-  }
-
-  behavior of "String to File Ops"
-
-  it should "return a list of all csv file inside test_files" in {
-    Given("path to test-files")
-    val dirUrl: String = getClass.getClassLoader.getResource("test_files").getPath
-
-    When("converting the string to list of file names")
-    val actual = dirUrl.toListOfFiles
-
-    Then("it should return 2 files only")
-    actual.length shouldBe 2
-    actual(0) should endWith("abcd.csv")
-    actual(1) should endWith("123.csv")
   }
 }

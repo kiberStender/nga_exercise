@@ -64,17 +64,4 @@ object StringOps {
             .raiseError[F, Sensor]
       }
   }
-
-  /** An operation to convert a [[String]] into a list of [[String]]s representing a lis tof files
-    * in a directory were the files are all csv
-    * @param dirUrl
-    *   The [[String]] to be converted
-    */
-  implicit class StringToFilesOps(dirUrl: String) {
-    def toListOfFiles: List[String] = (new File(dirUrl))
-      .listFiles()
-      .filter(f => f.isFile && f.getPath.endsWith(".csv"))
-      .map(_.getPath)
-      .toList
-  }
 }

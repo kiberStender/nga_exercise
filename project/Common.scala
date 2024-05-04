@@ -12,6 +12,7 @@ object Common {
 
     Global / scalacOptions                   := Seq("-P:kind-projector:underscore-placeholders", "-Ymacro-annotations"),
     Global / transitiveClassifiers           := Seq(Artifact.SourceClassifier),
+    Global / compile / run / fork            := false,
     Test / parallelExecution                 := true
   )
 

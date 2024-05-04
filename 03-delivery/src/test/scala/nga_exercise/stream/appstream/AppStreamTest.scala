@@ -11,12 +11,12 @@ import org.scalatest.matchers.should.Matchers
 class AppStreamTest extends AsyncFlatSpec with Matchers with GivenWhenThen {
   private type F[A] = IO[A]
   private implicit val IoRuntime: IORuntime = cats.effect.unsafe.IORuntime.global
+  private val chunk: Int = 2
 
   behavior of "App Stream"
 
   it should "correct summarize 2 streams of sensor" in {
     Given("a valid stream of sensors")
-    val dirUrl: String = getClass.getClassLoader.getResource("test_csv").getPath
     val leader_1_path: String =
       getClass.getClassLoader.getResource("test_csv/leader-1.csv").getPath
     val leader_2_path: String =
@@ -35,7 +35,7 @@ class AppStreamTest extends AsyncFlatSpec with Matchers with GivenWhenThen {
       case `leader_2_path` => fs2.Stream(leader_2_1, leader_2_2, leader_2_3, leader_2_4)
       case _               => throw new Exception("Wrong parameter")
     }
-    val appStreamF: F[AppStream[F]] = AppStream.dsl(fileStreamer)
+    val appStreamF: F[AppStream[F]] = AppStream.dsl(chunk)(fileStreamer)
 
     val expectedSensorMap = Map(
       "s1" -> SensorStatistic(
@@ -70,7 +70,7 @@ class AppStreamTest extends AsyncFlatSpec with Matchers with GivenWhenThen {
     When("summarizing it")
     appStreamF
       .flatMap { appStream =>
-        val actual = appStream.start(dirUrl)
+        val actual = appStream.start(List(leader_1_path, leader_2_path))
 
         Then("it should work")
 
@@ -101,7 +101,7 @@ class AppStreamTest extends AsyncFlatSpec with Matchers with GivenWhenThen {
       case `leader_2_path` => fs2.Stream.empty
       case _               => throw new Exception("Wrong parameter")
     }
-    val appStreamF: F[AppStream[F]] = AppStream.dsl(fileStreamer)
+    val appStreamF: F[AppStream[F]] = AppStream.dsl(chunk)(fileStreamer)
 
     val expectedSensorMap = Map(
       "s1" -> SensorStatistic(
@@ -127,7 +127,7 @@ class AppStreamTest extends AsyncFlatSpec with Matchers with GivenWhenThen {
     When("summarizing it")
     appStreamF
       .flatMap { appStream =>
-        val actual = appStream.start(dirUrl)
+        val actual = appStream.start(List(leader_1_path, leader_2_path))
 
         Then("it should work")
 
