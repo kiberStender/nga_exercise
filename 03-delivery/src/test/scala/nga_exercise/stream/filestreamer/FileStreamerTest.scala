@@ -10,8 +10,9 @@ import org.scalatest.matchers.should.Matchers
 class FileStreamerTest extends AsyncFlatSpec with Matchers with GivenWhenThen {
   private type F[A] = IO[A]
   private implicit val IoRuntime: IORuntime = cats.effect.unsafe.IORuntime.global
+  private val fileChunkedSize = 1024
 
-  private val fileStreamerF: F[FileStreamer[F]] = FileStreamer.dsl[F]
+  private val fileStreamerF: F[FileStreamer[F]] = FileStreamer.chunked[F](fileChunkedSize)
 
   behavior of "File Streamer"
 

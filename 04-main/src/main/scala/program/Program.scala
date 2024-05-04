@@ -18,10 +18,11 @@ object Program {
     for {
       _ <- logger.info("Started application")
       chunk = 5
+      fileChunkSize = 1024
       _ <- logger.info(s"Chunk value = $chunk")
       directoryName <- argsValidator.validate(args)
       folderProcessor <- FolderProcessor.dsl
-      fileStreamer <- FileStreamer.dsl
+      fileStreamer <- FileStreamer.chunked(fileChunkSize)
       appStreamer <- AppStream.dsl(chunk)(fileStreamer)
       summarizer <- StreamSummarizer.stringRepr
       csvFileList <- folderProcessor.process(directoryName)

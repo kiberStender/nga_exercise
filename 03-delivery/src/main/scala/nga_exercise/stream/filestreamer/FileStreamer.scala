@@ -1,6 +1,7 @@
 package nga_exercise.stream.filestreamer
 
 import cats.effect.Async
+import fs2.io.file.Flags.Read
 import fs2.text
 import nga_exercise.model.Sensor
 import nga_exercise.ops.StringOps.StringToSensorOps
@@ -20,12 +21,12 @@ trait FileStreamer[F[*]] {
 }
 
 object FileStreamer {
-  def dsl[F[*]: Async]: F[FileStreamer[F]] = Async[F].delay {
+  def chunked[F[*]: Async](fileChunkSize: Int): F[FileStreamer[F]] = Async[F].delay {
     new FileStreamer[F] {
       def stream(path: String): fs2.Stream[F, Sensor] = {
         fs2.io.file
           .Files[F]
-          .readAll(fs2.io.file.Path(path))
+          .readAll(fs2.io.file.Path(path), fileChunkSize, Read)
           .through(text.utf8.decode)
           .through(text.lines)
           .drop(1) // Removing Headers
