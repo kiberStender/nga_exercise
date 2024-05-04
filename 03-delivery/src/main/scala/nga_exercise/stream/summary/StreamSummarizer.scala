@@ -9,13 +9,18 @@ import nga_exercise.model.{IncorrectReading, NaN, Output, Sensor, SensorStatisti
   * @tparam F
   *   The bound type
   */
-trait StreamSummarizer[F[*]] {
-  def summarize(output: Output): fs2.Stream[F, String]
+trait StreamSummarizer[F[*], A] {
+  /**
+   * Method that takes the output of a given stream and summarizes it to a given type A
+   * @param output The given output to be summarized
+   * @return
+   */
+  def summarize(output: Output): fs2.Stream[F, A]
 }
 
 object StreamSummarizer {
-  def stringRepr[F[*]: Async]: F[StreamSummarizer[F]] = Async[F].delay {
-    new StreamSummarizer[F] {
+  def stringRepr[F[*]: Async]: F[StreamSummarizer[F, String]] = Async[F].delay {
+    new StreamSummarizer[F, String] {
       private def countMeasurements(sensorStatMap: Map[String, SensorStatistic]): (Long, Long) =
         sensorStatMap.values.foldLeft((0L, 0L)) {
           case ((processedMeasurements, failedMeasurements), sensorStatistic) =>

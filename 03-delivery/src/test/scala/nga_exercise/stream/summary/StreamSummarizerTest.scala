@@ -11,7 +11,7 @@ class StreamSummarizerTest extends AsyncFlatSpec with Matchers with GivenWhenThe
   private type F[A] = IO[A]
   private implicit val IoRuntime: IORuntime = cats.effect.unsafe.IORuntime.global
 
-  private val streamSummarizerF: F[StreamSummarizer[F]] = StreamSummarizer.stringRepr
+  private val streamSummarizerF: F[StreamSummarizer[F, String]] = StreamSummarizer.stringRepr
 
   behavior of "Stream Summarizer"
 
